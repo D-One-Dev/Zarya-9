@@ -8,13 +8,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/OLD/Menu 1.unity
     guid: e760f06f2d71e1f4ba9081816a748161
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Menu.unity
     guid: 88e24fb8c52f22940a971dfae2dccda3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Gameplay.unity
     guid: 1b7b3968651949743b270838993e9e31
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game End.unity
     guid: 0b60795d1a65da04691432bfa0ad4a47
   - enabled: 0
@@ -38,4 +38,16 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/OLD/GameplayOLDFuckyou.unity
     guid: 7b6ba45a831a9bc4f890157dbc653cc8
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/VR/Menu.unity
+    guid: 760576b54fe26364fa0bd238fed91b1b
+  - enabled: 1
+    path: Assets/Scenes/VR/Gameplay.unity
+    guid: c38ecc1dc3585c24c8c51d13dc4041a2
+  - enabled: 1
+    path: Assets/Scenes/VR/Game End.unity
+    guid: 4fd523ea3f7a9474eb5ae4f6877d50bb
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: ece66ba8927c1f64ca232155e5bc89ae, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: d1a6509b17df13e4d839444a192e6f03, type: 2}
+  m_UseUCBPForAssetBundles: 0
