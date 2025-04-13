@@ -73,7 +73,7 @@ public class PickupController : MonoBehaviour
         {
             heldObjRB = pickObjRB;
             heldObjRB.useGravity = false;
-            heldObjRB.drag = 10;
+            heldObjRB.linearDamping = 10;
             //heldObjRB.constraints = RigidbodyConstraints.FreezeRotation;
 
             heldObjRB.transform.parent = holdArea;
@@ -84,7 +84,7 @@ public class PickupController : MonoBehaviour
     public void DropObject()
     {
         heldObjRB.useGravity = true;
-        heldObjRB.drag = 1;
+        heldObjRB.linearDamping = 1;
         //heldObjRB.constraints = RigidbodyConstraints.None;
 
         heldObjRB.transform.parent = null;
@@ -102,7 +102,7 @@ public class PickupController : MonoBehaviour
         if (heldObj != null)
         {
             heldObjRB.useGravity = true;
-            heldObjRB.drag = 1;
+            heldObjRB.linearDamping = 1;
             //heldObjRB.constraints = RigidbodyConstraints.None;
 
             heldObj.layer = 25;

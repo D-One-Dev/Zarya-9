@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Jam Game.sln"
+    "dotnet.defaultSolution": "Zarya-9.sln"
 }
