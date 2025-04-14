@@ -81,4 +81,9 @@ public class EventHandler : MonoBehaviour
     {
         OnResumeGame?.Invoke();
     }
+
+    public void TestEvent()
+    {
+        Debug.Log("Test event triggered");
+    }
 }
