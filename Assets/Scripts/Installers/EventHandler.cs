@@ -15,6 +15,7 @@ public class EventHandler : MonoBehaviour
     public event Action OnStopWalking;
     public event Action OnChangeVolume;
     public event Action<bool> OnChangeQuality;
+    public event Action OnResumeGame;
 
     public void StartSceneLoading(string sceneName)
     {
@@ -74,5 +75,10 @@ public class EventHandler : MonoBehaviour
     public void ChangeQuality(bool direction)
     {
         OnChangeQuality?.Invoke(direction);
+    }
+
+    public void ResumeGame()
+    {
+        OnResumeGame?.Invoke();
     }
 }

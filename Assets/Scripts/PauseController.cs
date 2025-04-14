@@ -1,51 +1,69 @@
 using UnityEngine;
+using Zenject;
 //using UnityEngine.Rendering.PostProcessing;
 
-public class PauseController : MonoBehaviour
+public class PauseController
 {
-    [SerializeField] private GameObject pauseScreen;
-    [SerializeField] private GameObject settingsScreen;
-    [SerializeField] private SceneLoader _sceneLoader;
+    [Inject(Id = "PauseScreen")]
+    private readonly GameObject _pauseScreen;
+    [Inject(Id = "SettingsScreen")]
+    private readonly GameObject _settingsScreen;
+
     private Controls _controls;
-    private bool isPaused;
-    private void Awake()
+    private EventHandler _eventHandler;
+
+    private bool _isPaused;
+
+    [Inject]
+    public void Construct(Controls controls, EventHandler eventHandler)
     {
-        _controls = new Controls();
+        _controls = controls;
+        _eventHandler = eventHandler;
+        _eventHandler.OnGoToMenu += GoToMenu;
+        _eventHandler.OnResumeGame += PlayPause;
+
         _controls.Gameplay.Esc.performed += ctx => PlayPause();
-    }
-    private void OnEnable()
-    {
         _controls.Enable();
     }
-    private void OnDisable()
-    {
-        _controls.Disable();
-    }
+
+    // private void Awake()
+    // {
+    //     _controls = new Controls();
+    //     _controls.Gameplay.Esc.performed += ctx => PlayPause();
+    // }
+    // private void OnEnable()
+    // {
+    //     _controls.Enable();
+    // }
+    // private void OnDisable()
+    // {
+    //     _controls.Disable();
+    // }
 
     public void PlayPause()
     {
-        if (!isPaused)
+        if (!_isPaused)
         {
             Time.timeScale = 0f;
-            pauseScreen.SetActive(true);
-            settingsScreen.SetActive(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            isPaused = true;
+            _pauseScreen.SetActive(true);
+            _settingsScreen.SetActive(false);
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
+            _isPaused = true;
         }
         else
         {
-            pauseScreen.SetActive(false);
+            _pauseScreen.SetActive(false);
             Time.timeScale = 1f;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            isPaused = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+            _isPaused = false;
         }
     }
 
-    public void GoToMenu()
+    private void GoToMenu()
     {
         Time.timeScale = 1f;
-        //_sceneLoader.StartSceneLoading("Menu");
+        _eventHandler.StartSceneLoading("Menu");
     }
 }

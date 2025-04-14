@@ -13,6 +13,7 @@ public class SceneLoader
     public void Construct(EventHandler eventHandler)
     {
         eventHandler.OnStartSceneLoading += StartSceneLoading;
+        eventHandler.OnNextSceneTransitionEnd += FadeInEnd;
     }
 
     private void StartSceneLoading(string scene)
@@ -26,7 +27,7 @@ public class SceneLoader
         }
     }
 
-    public void FadeInEnd()
+    private void FadeInEnd()
     {
         _loadingSceneOperation.allowSceneActivation = true;
     }
