@@ -23,11 +23,11 @@ public class DeathController : MonoBehaviour
 
     public void GoToMenu()
     {
-        _sceneLoader.StartSceneLoading("Menu");
+        //_sceneLoader.StartSceneLoading("Menu");
     }
 
     public void RestartDay()
     {
-        _sceneLoader.StartSceneLoading("Gameplay");
+        //_sceneLoader.StartSceneLoading("Gameplay");
     }
 }

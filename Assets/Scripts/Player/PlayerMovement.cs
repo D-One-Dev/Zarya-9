@@ -45,14 +45,14 @@ public class PlayerMovement : MonoBehaviour
             if (PlayerInteraction.instance.playerStatus == 0)
             {
                 Vector2 input = _controls.Gameplay.Movement.ReadValue<Vector2>();
-                if (input != Vector2.zero) SoundController.instance.StartWalk();
-                else SoundController.instance.StopWalk();
+                // if (input != Vector2.zero) SoundController.instance.StartWalk();
+                // else SoundController.instance.StopWalk();
                 Vector3 movement;
-                if(shift) movement = movementSpeed * 2 * Time.deltaTime * (input.x * transform.right + input.y * transform.forward);
+                if (shift) movement = movementSpeed * 2 * Time.deltaTime * (input.x * transform.right + input.y * transform.forward);
                 else movement = movementSpeed * Time.deltaTime * (input.x * transform.right + input.y * transform.forward);
                 _characterController.Move(movement);
             }
-            else SoundController.instance.StopWalk();
+            // else SoundController.instance.StopWalk();
             if (_characterController.isGrounded) grav = 0;
             else grav += gravity;
             _characterController.Move(Vector3.up * grav * Time.deltaTime);

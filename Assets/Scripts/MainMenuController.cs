@@ -1,26 +1,44 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenuController : IInitializable
 {
-    [SerializeField] private SceneLoader _sceneLoader;
-    [SerializeField] private Button loadGameButton;
+    [Inject(Id = "LoadGameButton")]
+    private readonly Button loadGameButton;
 
-    private void Start()
+    private EventHandler _eventHandler;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
     {
-        if(loadGameButton != null)
+        _eventHandler = eventHandler;
+        _eventHandler.OnQuitGame += QuitGame;
+        _eventHandler.OnStartNewGame += StartNewGame;
+        _eventHandler.OnLoadGame += LoadGame;
+        _eventHandler.OnGoToMenu += GoToMenu;
+    }
+
+    public void Initialize()
+    {
+        if (loadGameButton != null)
         {
-            if(PlayerPrefs.GetInt("Day", 1) == 1) loadGameButton.interactable = false;
+            if (PlayerPrefs.GetInt("Day", 1) == 1) loadGameButton.interactable = false;
             else loadGameButton.interactable = true;
         }
     }
 
-    public void QuitGame()
+    private void QuitGame()
     {
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 
-    public void StartNewGame()
+    private void StartNewGame()
     {
         PlayerPrefs.SetFloat("PlayerPosX", -10000f);
         PlayerPrefs.SetFloat("PlayerPosY", -10000f);
@@ -28,19 +46,19 @@ public class MainMenuController : MonoBehaviour
 
         PlayerPrefs.SetFloat("PlayerRotY", -10000f);
         PlayerPrefs.SetFloat("PlayerRotX", -10000f);
-        
+
         PlayerPrefs.SetInt("Day", 1);
         PlayerPrefs.Save();
-        _sceneLoader.StartSceneLoading("Gameplay");
+        LoadGame();
     }
 
-    public void LoadGame()
+    private void LoadGame()
     {
-        _sceneLoader.StartSceneLoading("Gameplay");
+        _eventHandler.StartSceneLoading("Gameplay");
     }
 
-    public void GoToMenu()
+    private void GoToMenu()
     {
-        _sceneLoader.StartSceneLoading("Menu");
+        _eventHandler.StartSceneLoading("Menu");
     }
 }

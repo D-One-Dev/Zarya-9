@@ -1,47 +1,43 @@
 using UnityEngine;
+using Zenject;
 
-public class SoundController : MonoBehaviour
+public class SoundController
 {
-    public static SoundController instance;
-    [SerializeField] private AudioSource _AudioSource;
-    [SerializeField] private AudioSource _WalkAudioSource;
-    private void Awake()
+    [Inject(Id = "AudioSource")]
+    private readonly AudioSource _audioSource;
+    [Inject(Id = "WalkAudioSource")]
+    private readonly AudioSource _walkAudioSource;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
     {
-        instance = this;
+        eventHandler.OnPlaySound += PlaySound;
+        eventHandler.OnPlaySoundWithRandomPitch += PlaySoundRandomPitch;
+        eventHandler.OnStartWalking += StartWalking;
+        eventHandler.OnStopWalking += StopWalking;
     }
 
-    public void PlaySound(AudioClip sound, float volume = 1f)
+    private void PlaySound(AudioClip sound)
     {
-        _AudioSource.volume = volume;
-        _AudioSource.PlayOneShot(sound);
+        _audioSource.volume = 1f;
+        _audioSource.pitch = 1f;
+        _audioSource.PlayOneShot(sound);
     }
 
-    public void PlaySound(AudioClip sound)
+    private void PlaySoundRandomPitch(AudioClip sound)
     {
-        _AudioSource.volume = 1f;
-        _AudioSource.PlayOneShot(sound);
-    }
-    public void PlaySoundRandomPitch(AudioClip sound, float volume = 1f)
-    {
-        _AudioSource.volume = volume;
-        _AudioSource.pitch = Random.Range(.9f, 1.1f);
-        _AudioSource.PlayOneShot(sound);
+        _audioSource.volume = 1f;
+        _audioSource.pitch = Random.Range(.9f, 1.1f);
+        _audioSource.PlayOneShot(sound);
     }
 
-    public void PlaySoundRandomPitch(AudioClip sound)
+    private void StartWalking()
     {
-        _AudioSource.volume = 1f;
-        _AudioSource.pitch = Random.Range(.9f, 1.1f);
-        _AudioSource.PlayOneShot(sound);
+        if (_walkAudioSource.isPlaying == false) _walkAudioSource.Play();
     }
 
-    public void StartWalk()
+    private void StopWalking()
     {
-        if(_WalkAudioSource.isPlaying == false) _WalkAudioSource.Play();
-    }
-
-    public void StopWalk()
-    {
-        if (_WalkAudioSource.isPlaying) _WalkAudioSource.Stop();
+        if (_walkAudioSource.isPlaying) _walkAudioSource.Stop();
     }
 }

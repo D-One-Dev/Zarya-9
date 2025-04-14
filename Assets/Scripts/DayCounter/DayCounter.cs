@@ -31,13 +31,13 @@ public class DayCounter : MonoBehaviour
     {
         //Instance = this;
     }
-    
+
     public void GoToNextDay()
     {
         if (!isSleeping)
         {
             //CheckSleep();
-            if(canSleep)
+            if (canSleep)
             {
                 PlayerPrefs.SetFloat("PlayerPosX", player.position.x);
                 PlayerPrefs.SetFloat("PlayerPosY", player.position.y);
@@ -50,7 +50,7 @@ public class DayCounter : MonoBehaviour
                 PlayerPrefs.SetInt("Day", currentDay);
 
                 PlayerPrefs.Save();
-                _sceneLoader.StartSceneLoading("Gameplay");
+                //_sceneLoader.StartSceneLoading("Gameplay");
                 isSleeping = true;
             }
         }
@@ -67,7 +67,7 @@ public class DayCounter : MonoBehaviour
         switch (currentDay)
         {
             case 1:
-                if(Array.IndexOf(day1Triggers, trigger) != -1)
+                if (Array.IndexOf(day1Triggers, trigger) != -1)
                 {
                     day1Triggers[Array.IndexOf(day1Triggers, trigger)] = null;
                 }
@@ -149,9 +149,9 @@ public class DayCounter : MonoBehaviour
         switch (currentDay)
         {
             case 1:
-                foreach(string trigger in day1Triggers)
+                foreach (string trigger in day1Triggers)
                 {
-                    if(trigger != null) flag = true;
+                    if (trigger != null) flag = true;
                 }
                 break;
             case 2:

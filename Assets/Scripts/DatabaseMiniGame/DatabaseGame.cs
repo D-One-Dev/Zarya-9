@@ -44,7 +44,7 @@ public class DatabaseGame : MonoBehaviour, IInteractable
 
     private void Catch()
     {
-        if(PlayerInteraction.instance.playerStatus == 1 && active)
+        if (PlayerInteraction.instance.playerStatus == 1 && active)
         {
             RectTransform zone = CheckCollision();
             if (CheckCollision() != null)
@@ -56,23 +56,23 @@ public class DatabaseGame : MonoBehaviour, IInteractable
                 {
                     Debug.Log("Win");
                     _animator.SetTrigger("Win");
-                    SoundController.instance.PlaySoundRandomPitch(gameWin);
-                    
+                    // SoundController.instance.PlaySoundRandomPitch(gameWin);
+
                     onCompleteGame?.Invoke();
                 }
-                else SoundController.instance.PlaySoundRandomPitch(catchCorrect);
+                // else SoundController.instance.PlaySoundRandomPitch(catchCorrect);
             }
             else
             {
                 lives--;
-                livesText.text = "Попыток: " + lives;
+                livesText.text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + lives;
                 if (lives == 0)
                 {
-                    SoundController.instance.PlaySoundRandomPitch(gameLoose);
-                    DeathController.instance.TriggerDeath("В ходе взлома вы активировали сигнализацию. Система охраны комплекса атаковала и убила вас");
+                    // SoundController.instance.PlaySoundRandomPitch(gameLoose);
+                    DeathController.instance.TriggerDeath("пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ");
                     Debug.Log("Loose");
                 }
-                else SoundController.instance.PlaySoundRandomPitch(catchWrong);
+                // else SoundController.instance.PlaySoundRandomPitch(catchWrong);
             }
         }
     }
@@ -82,7 +82,7 @@ public class DatabaseGame : MonoBehaviour, IInteractable
         foreach (RectTransform zone in greenZones)
         {
             if (cursor.localPosition.x >= zone.localPosition.x - zone.rect.width && cursor.localPosition.x <= zone.localPosition.x + zone.rect.width)
-            { 
+            {
                 return zone;
             }
         }

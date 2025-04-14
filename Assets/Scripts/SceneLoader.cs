@@ -1,25 +1,33 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
-public class SceneLoader : MonoBehaviour
+public class SceneLoader
 {
-    [SerializeField] private Animator blackScreenAnim;
-    private AsyncOperation loadingSceneOperation;
-    private bool isLoading;
+    [Inject(Id = "BlackScreenAnimator")]
+    private readonly Animator _blackScreenAnimator;
+    private AsyncOperation _loadingSceneOperation;
+    private bool _isLoading;
 
-    public void StartSceneLoading(string scene)
+    [Inject]
+    public void Construct(EventHandler eventHandler)
     {
-        if (!isLoading)
+        eventHandler.OnStartSceneLoading += StartSceneLoading;
+    }
+
+    private void StartSceneLoading(string scene)
+    {
+        if (!_isLoading)
         {
-            isLoading = true;
-            blackScreenAnim.SetTrigger("FadeIn");
-            loadingSceneOperation = SceneManager.LoadSceneAsync(scene);
-            loadingSceneOperation.allowSceneActivation = false;
+            _isLoading = true;
+            _blackScreenAnimator.SetTrigger("FadeIn");
+            _loadingSceneOperation = SceneManager.LoadSceneAsync(scene);
+            _loadingSceneOperation.allowSceneActivation = false;
         }
     }
 
     public void FadeInEnd()
     {
-        loadingSceneOperation.allowSceneActivation = true;
+        _loadingSceneOperation.allowSceneActivation = true;
     }
 }

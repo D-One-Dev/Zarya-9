@@ -13,7 +13,7 @@ public class DoorCollider : MonoBehaviour
             if (other.gameObject.CompareTag("Player"))
             {
                 _animator.SetTrigger("Open");
-                SoundController.instance.PlaySoundRandomPitch(doorSound, .1f);
+                // SoundController.instance.PlaySoundRandomPitch(doorSound, .1f);
             }
         }
     }
@@ -25,7 +25,7 @@ public class DoorCollider : MonoBehaviour
             if (other.gameObject.CompareTag("Player"))
             {
                 _animator.SetTrigger("Close");
-                SoundController.instance.PlaySoundRandomPitch(doorSound, .1f);
+                // SoundController.instance.PlaySoundRandomPitch(doorSound, .1f);
             }
         }
     }

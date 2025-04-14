@@ -85,12 +85,12 @@ public class PipeController : MonoBehaviour, IInteractable
     {
         if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
         {
-            if(currentPipe == -Vector2Int.one)
+            if (currentPipe == -Vector2Int.one)
             {
                 if (cursorPosition.y > 0)
                 {
-                     cursorPosition.y--;
-                     UpdateCursor();
+                    cursorPosition.y--;
+                    UpdateCursor();
                 }
             }
         }
@@ -127,7 +127,7 @@ public class PipeController : MonoBehaviour, IInteractable
             {
                 tileGrid[cursorPosition.x, cursorPosition.y].RotatePipe(false);
                 UpdatePipes();
-                SoundController.instance.PlaySoundRandomPitch(pipeRotate);
+                // SoundController.instance.PlaySoundRandomPitch(pipeRotate);
             }
         }
     }
@@ -148,7 +148,7 @@ public class PipeController : MonoBehaviour, IInteractable
             {
                 tileGrid[cursorPosition.x, cursorPosition.y].RotatePipe(true);
                 UpdatePipes();
-                SoundController.instance.PlaySoundRandomPitch(pipeRotate);
+                // SoundController.instance.PlaySoundRandomPitch(pipeRotate);
             }
         }
     }
@@ -167,13 +167,13 @@ public class PipeController : MonoBehaviour, IInteractable
 
     public void UpdateCursor()
     {
-        foreach(Image cursor in cursorGrid)
+        foreach (Image cursor in cursorGrid)
         {
             cursor.color = new Color(0f, 0f, 0f, 0f);
         }
 
         cursorGrid[cursorPosition.x, cursorPosition.y].color = Color.green;
-        SoundController.instance.PlaySoundRandomPitch(cursorMove);
+        // SoundController.instance.PlaySoundRandomPitch(cursorMove);
     }
 
     private void Use()
@@ -192,7 +192,7 @@ public class PipeController : MonoBehaviour, IInteractable
 
     private void UpdatePipes()
     {
-        foreach(Pipe pipe in tileGrid)
+        foreach (Pipe pipe in tileGrid)
         {
             pipe.updated = false;
             if (pipe.movable)
@@ -201,9 +201,9 @@ public class PipeController : MonoBehaviour, IInteractable
             }
         }
         UpdatePipe(startPipe);
-        foreach(Pipe pipe in tileGrid) pipe.UpdateImage();
+        foreach (Pipe pipe in tileGrid) pipe.UpdateImage();
         CheckAir();
-        if(currentAir > 0) CheckWin();
+        if (currentAir > 0) CheckWin();
     }
 
     private void UpdatePipe(Vector2Int pos)
@@ -211,9 +211,9 @@ public class PipeController : MonoBehaviour, IInteractable
         if (tileGrid[pos.x, pos.y].updated == false)
         {
             tileGrid[pos.x, pos.y].updated = true;
-            if(pos.y > 0)
+            if (pos.y > 0)
             {
-                if(tileGrid[pos.x, pos.y].ways[0] && tileGrid[pos.x, pos.y - 1].ways[2])
+                if (tileGrid[pos.x, pos.y].ways[0] && tileGrid[pos.x, pos.y - 1].ways[2])
                 {
                     tileGrid[pos.x, pos.y - 1].filled = true;
                     UpdatePipe(new Vector2Int(pos.x, pos.y - 1));
@@ -255,10 +255,10 @@ public class PipeController : MonoBehaviour, IInteractable
         {
             gameWon = true;
             Debug.Log("Win");
-            SoundController.instance.PlaySoundRandomPitch(gameWin);
+            // SoundController.instance.PlaySoundRandomPitch(gameWin);
             _animator.SetTrigger("Win");
             DayCounter.Instance.SetTrigger("Pipes");
-            
+
             /*if (DayCounter.Instance.currentDay == 2)
             {
                 SylphietteDialogueSystem.Instance.StartNextDialogue();
@@ -270,7 +270,7 @@ public class PipeController : MonoBehaviour, IInteractable
     private void CheckAir()
     {
         int air = -1;
-        foreach(Pipe pipe in tileGrid)
+        foreach (Pipe pipe in tileGrid)
         {
             if (pipe.filled) air++;
         }
@@ -279,11 +279,11 @@ public class PipeController : MonoBehaviour, IInteractable
 
         airSprite.fillAmount = Mathf.Clamp(((float)currentAir / startAir), 0f, 1f);
 
-        if(currentAir <= 0)
+        if (currentAir <= 0)
         {
             Debug.Log("Loose");
-            SoundController.instance.PlaySoundRandomPitch(gameLoose);
-            DeathController.instance.TriggerDeath("Вы допустили утечку кислорода и задохнулись");
+            // SoundController.instance.PlaySoundRandomPitch(gameLoose);
+            DeathController.instance.TriggerDeath("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         }
     }
 }
