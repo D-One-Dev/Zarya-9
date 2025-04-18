@@ -16,6 +16,7 @@ public class EventHandler : MonoBehaviour
     public event Action OnChangeVolume;
     public event Action<bool> OnChangeQuality;
     public event Action OnResumeGame;
+    public event Action<MinigameSelector> OnMiniGameTrigger;
 
     public void StartSceneLoading(string sceneName)
     {
@@ -85,5 +86,10 @@ public class EventHandler : MonoBehaviour
     public void TestEvent()
     {
         Debug.Log("Test event triggered");
+    }
+
+    public void MiniGameTrigger(MinigameSelector minigame)
+    {
+        OnMiniGameTrigger?.Invoke(minigame);
     }
 }
