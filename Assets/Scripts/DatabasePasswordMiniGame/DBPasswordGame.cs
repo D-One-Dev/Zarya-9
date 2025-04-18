@@ -1,6 +1,7 @@
 ﻿using Sylphiette;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace DatabasePasswordMiniGame
 {
@@ -8,13 +9,13 @@ namespace DatabasePasswordMiniGame
     {
         [SerializeField] private TMP_Text tryCountText;
         [SerializeField] private TMP_Text passwordText;
-        
+
         [SerializeField] private TMP_Text matchText;
         [SerializeField] private TMP_Text placeMatchText;
 
         [SerializeField] private Transform spawnPlace;
         [SerializeField] private GameObject outputItem;
-        
+
         private bool isActive, isEnteringPassword;
         private bool isFirstSymbol = true;
 
@@ -22,8 +23,18 @@ namespace DatabasePasswordMiniGame
         private string _enteredPassword;
 
         private int tryCount = 5;
-        
+
         private Controls _controls;
+
+        private EventHandler _eventHandler;
+        private DayCounter _dayCounter;
+
+        [Inject]
+        public void Construct(EventHandler eventHandler, DayCounter dayCounter)
+        {
+            _eventHandler = eventHandler;
+            _dayCounter = dayCounter;
+        }
 
         private void Awake()
         {
@@ -31,7 +42,7 @@ namespace DatabasePasswordMiniGame
             _controls.Gameplay.Left.performed += ctx => OnAClick();
             _controls.Gameplay.Enter.performed += ctx => OnEnterClick();
         }
-        
+
         private void OnEnable()
         {
             _controls.Enable();
@@ -59,7 +70,7 @@ namespace DatabasePasswordMiniGame
             if (isActive)
             {
                 if (PlayerInteraction.instance.playerStatus != 1) return;
-            
+
                 isEnteringPassword = !isEnteringPassword;
 
                 if (isEnteringPassword)
@@ -76,10 +87,10 @@ namespace DatabasePasswordMiniGame
             if (isActive)
             {
                 if (PlayerInteraction.instance.playerStatus != 1 || isEnteringPassword) return;
-                
+
                 _enteredPassword = _enteredPassword.ToLower();
                 password = password.ToLower();
-            
+
                 if (_enteredPassword != password)
                 {
                     tryCount--;
@@ -98,11 +109,11 @@ namespace DatabasePasswordMiniGame
                 else
                 {
                     print("thats right");
-                    DayCounter.Instance.SetTrigger("BD");
-                    
+                    _eventHandler.SetDayCounterTrigger("BD");
+
                     var spawnedObject = Instantiate(outputItem, spawnPlace.position, Quaternion.identity);
 
-                    switch (DayCounter.Instance.currentDay)
+                    switch (_dayCounter.CurrentDay)
                     {
                         case 1:
                             spawnedObject.GetComponent<Item>().name = "Схема шестерни двери";
@@ -114,17 +125,17 @@ namespace DatabasePasswordMiniGame
                             spawnedObject.GetComponent<Item>().name = "Схема панели для ракеты";
                             break;
                     }
-                    
+
                     spawnedObject.GetComponent<Rigidbody>().AddForce(spawnedObject.transform.forward * 1000);
 
-                    if (DayCounter.Instance.currentDay == 2)
+                    if (_dayCounter.CurrentDay == 2)
                     {
                         SylphietteDialogueSystem.Instance.StartNextDialogue();
                     }
                 }
             }
         }
-        
+
         private int CountMatchingChars(string str1, string str2)
         {
             int count = 0;
@@ -137,7 +148,7 @@ namespace DatabasePasswordMiniGame
             }
             return count;
         }
-        
+
         private int CountPlaceMatchingChars(string str1, string str2)
         {
             int count = 0;
@@ -150,7 +161,7 @@ namespace DatabasePasswordMiniGame
             }
             return count;
         }
-        
+
         public void TurnOn()
         {
             Cursor.lockState = CursorLockMode.None;

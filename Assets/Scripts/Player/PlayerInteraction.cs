@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -12,6 +13,15 @@ public class PlayerInteraction : MonoBehaviour
     private Controls _controls;
     public GameObject currentObject;
     bool canInteract;
+
+    private EventHandler _eventHandler;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
+    {
+        _eventHandler = eventHandler;
+    }
+
     private void Awake()
     {
         instance = this;
@@ -35,7 +45,7 @@ public class PlayerInteraction : MonoBehaviour
     private void CheckInteraction()
     {
         RaycastHit hit;
-        if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, interactDistance, _lm))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, interactDistance, _lm))
         {
             canInteract = true;
             crosshair.sprite = crosshairGreen;
@@ -70,7 +80,7 @@ public class PlayerInteraction : MonoBehaviour
                     }
                     break;
                 case "Bed":
-                    DayCounter.Instance.GoToNextDay();
+                    _eventHandler.GoToNextDay();
                     break;
                 default:
                     break;

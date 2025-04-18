@@ -65,11 +65,11 @@ public class DatabaseGame : MonoBehaviour, IInteractable
             else
             {
                 lives--;
-                livesText.text = "�������: " + lives;
+                livesText.text = "Попыток: " + lives;
                 if (lives == 0)
                 {
                     // SoundController.instance.PlaySoundRandomPitch(gameLoose);
-                    DeathController.instance.TriggerDeath("� ���� ������ �� ������������ ������������. ������� ������ ��������� ��������� � ����� ���");
+                    DeathController.instance.TriggerDeath("В ходе взлома вы активировали сигнализацию. Система охраны комплекса атаковала и убила вас");
                     Debug.Log("Loose");
                 }
                 // else SoundController.instance.PlaySoundRandomPitch(catchWrong);

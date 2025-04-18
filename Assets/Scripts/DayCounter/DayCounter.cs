@@ -1,58 +1,63 @@
 using System;
-using TMPro;
 using UnityEngine;
 using Zenject;
 
-public class DayCounter : MonoBehaviour
+public class DayCounter : IInitializable
 {
-    [SerializeField] private TMP_Text dayText;
-    [SerializeField] private Animator daySceenAnim;
-    [SerializeField] private SceneLoader _sceneLoader;
-    [SerializeField] private Transform player, cam;
-    [SerializeField] private string[] day1Triggers;
-    [SerializeField] private string[] day2Triggers;
-    [SerializeField] private string[] day3Triggers;
-    [SerializeField] private string[] day4Triggers;
-    [SerializeField] private string[] day5Triggers;
-    [SerializeField] private string[] day6Triggers;
-    [SerializeField] private string[] day7Triggers;
+    [Inject(Id = "PlayerTransform")]
+    private readonly Transform _playerTransform;
+    [Inject(Id = "CameraTransform")]
+    private readonly Transform _cameraTransform;
+    [Inject(Id = "Day1Triggers")]
+    private readonly string[] _day1Triggers;
+    [Inject(Id = "Day2Triggers")]
+    private readonly string[] _day2Triggers;
+    [Inject(Id = "Day3Triggers")]
+    private readonly string[] _day3Triggers;
+    [Inject(Id = "Day4Triggers")]
+    private readonly string[] _day4Triggers;
+    [Inject(Id = "Day5Triggers")]
+    private readonly string[] _day5Triggers;
+    [Inject(Id = "Day6Triggers")]
+    private readonly string[] _day6Triggers;
+    [Inject(Id = "Day7Triggers")]
+    private readonly string[] _day7Triggers;
 
-    public static DayCounter Instance;
-    public int currentDay = 1;
-
-    public bool _canSleep;
     private bool _isSleeping;
     private EventHandler _eventHandler;
+
+    public int CurrentDay { get; private set; } = 1;
 
     [Inject]
     public void Construct(EventHandler eventHandler)
     {
         _eventHandler = eventHandler;
         _eventHandler.OnGoToNextDay += GoToNextDay;
+        _eventHandler.OnSetDayCounterTrigger += SetTrigger;
+        _eventHandler.OnResetDay += ResetDay;
     }
 
-    private void Awake()
+    public void Initialize()
     {
-        Instance = this;
-        currentDay = PlayerPrefs.GetInt("Day", 1);
+        CurrentDay = PlayerPrefs.GetInt("Day", 1);
     }
 
-    public void GoToNextDay()
+    private void GoToNextDay()
     {
         if (!_isSleeping)
         {
             if (CheckSleep())
             {
                 Debug.Log("Sleeping");
-                PlayerPrefs.SetFloat("PlayerPosX", player.position.x);
-                PlayerPrefs.SetFloat("PlayerPosY", player.position.y);
-                PlayerPrefs.SetFloat("PlayerPosZ", player.position.z);
+                PlayerPrefs.SetFloat("PlayerPosX", _playerTransform.position.x);
+                PlayerPrefs.SetFloat("PlayerPosY", _playerTransform.position.y);
+                PlayerPrefs.SetFloat("PlayerPosZ", _playerTransform.position.z);
 
-                PlayerPrefs.SetFloat("PlayerRotY", player.localEulerAngles.y);
-                PlayerPrefs.SetFloat("PlayerRotX", cam.localEulerAngles.x);
+                PlayerPrefs.SetFloat("PlayerRotY", _playerTransform.localEulerAngles.y);
+                PlayerPrefs.SetFloat("PlayerRotX", _cameraTransform.localEulerAngles.x);
 
-                currentDay++;
-                PlayerPrefs.SetInt("Day", currentDay);
+                CurrentDay++;
+                PlayerPrefs.SetInt("Day", CurrentDay);
 
                 PlayerPrefs.Save();
                 _eventHandler.StartSceneLoading("Gameplay");
@@ -66,40 +71,41 @@ public class DayCounter : MonoBehaviour
         }
     }
 
-    public void ResetDay()
+    private void ResetDay()
     {
-        currentDay = 1;
+        CurrentDay = 1;
         PlayerPrefs.DeleteKey("Day");
+        _eventHandler.StartSceneLoading("Gameplay");
     }
 
-    public void SetTrigger(string trigger)
+    private void SetTrigger(string trigger)
     {
         string[] triggers;
-        switch (currentDay)
+        switch (CurrentDay)
         {
             case 1:
-                triggers = day1Triggers;
+                triggers = _day1Triggers;
                 break;
             case 2:
-                triggers = day2Triggers;
+                triggers = _day2Triggers;
                 break;
             case 3:
-                triggers = day3Triggers;
+                triggers = _day3Triggers;
                 break;
             case 4:
-                triggers = day4Triggers;
+                triggers = _day4Triggers;
                 break;
             case 5:
-                triggers = day5Triggers;
+                triggers = _day5Triggers;
                 break;
             case 6:
-                triggers = day6Triggers;
+                triggers = _day6Triggers;
                 break;
             case 7:
-                triggers = day7Triggers;
+                triggers = _day7Triggers;
                 break;
             default:
-                triggers = day1Triggers;
+                triggers = _day1Triggers;
                 break;
         }
 
@@ -116,31 +122,31 @@ public class DayCounter : MonoBehaviour
     private bool CheckSleep()
     {
         string[] triggers;
-        switch (currentDay)
+        switch (CurrentDay)
         {
             case 1:
-                triggers = day1Triggers;
+                triggers = _day1Triggers;
                 break;
             case 2:
-                triggers = day2Triggers;
+                triggers = _day2Triggers;
                 break;
             case 3:
-                triggers = day3Triggers;
+                triggers = _day3Triggers;
                 break;
             case 4:
-                triggers = day4Triggers;
+                triggers = _day4Triggers;
                 break;
             case 5:
-                triggers = day5Triggers;
+                triggers = _day5Triggers;
                 break;
             case 6:
-                triggers = day6Triggers;
+                triggers = _day6Triggers;
                 break;
             case 7:
-                triggers = day7Triggers;
+                triggers = _day7Triggers;
                 break;
             default:
-                triggers = day1Triggers;
+                triggers = _day1Triggers;
                 break;
         }
 

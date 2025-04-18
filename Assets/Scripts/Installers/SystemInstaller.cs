@@ -17,6 +17,15 @@ public class SystemInstaller : MonoInstaller
     [SerializeField] private AudioMixerGroup audioMixer;
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private GameObject settingsScreen;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private string[] day1Triggers;
+    [SerializeField] private string[] day2Triggers;
+    [SerializeField] private string[] day3Triggers;
+    [SerializeField] private string[] day4Triggers;
+    [SerializeField] private string[] day5Triggers;
+    [SerializeField] private string[] day6Triggers;
+    [SerializeField] private string[] day7Triggers;
     public override void InstallBindings()
     {
         Container.Bind<EventHandler>()
@@ -98,6 +107,56 @@ public class SystemInstaller : MonoInstaller
             .AsTransient();
 
         Container.Bind<PauseController>()
+            .FromNew()
+            .AsSingle()
+            .NonLazy();
+
+        Container.Bind<Transform>()
+            .WithId("PlayerTransform")
+            .FromInstance(playerTransform)
+            .AsTransient();
+
+        Container.Bind<Transform>()
+            .WithId("CameraTransform")
+            .FromInstance(cameraTransform)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day1Triggers")
+            .FromInstance(day1Triggers)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day2Triggers")
+            .FromInstance(day2Triggers)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day3Triggers")
+            .FromInstance(day3Triggers)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day4Triggers")
+            .FromInstance(day4Triggers)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day5Triggers")
+            .FromInstance(day5Triggers)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day6Triggers")
+            .FromInstance(day6Triggers)
+            .AsTransient();
+
+        Container.Bind<string[]>()
+            .WithId("Day7Triggers")
+            .FromInstance(day7Triggers)
+            .AsTransient();
+
+        Container.BindInterfacesAndSelfTo<DayCounter>()
             .FromNew()
             .AsSingle()
             .NonLazy();

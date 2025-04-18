@@ -25,10 +25,14 @@ namespace EWiresMiniGame
         private bool _isActive;
 
         // private Controls _controls;
+
+        private EventHandler _eventHandler;
+
         [Inject]
         public void Construct(EventHandler eventHandler)
         {
-            eventHandler.OnMinigameKeyPressed += CheckKey;
+            _eventHandler = eventHandler;
+            _eventHandler.OnMinigameKeyPressed += CheckKey;
         }
 
         private void CheckKey(string key)
@@ -182,7 +186,7 @@ namespace EWiresMiniGame
                 SylphietteDialogueSystem.Instance.StartNextDialogue();
                 activatedElectricalPanelSound.Play();
                 print("Electric wires mini-game completed");
-                DayCounter.Instance.SetTrigger("Wires");
+                _eventHandler.SetDayCounterTrigger("Wires");
 
                 for (int i = 0; i < _wirePath.Count; i++)
                 {

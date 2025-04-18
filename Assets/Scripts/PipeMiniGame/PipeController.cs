@@ -1,6 +1,7 @@
 using Sylphiette;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class PipeController : MonoBehaviour, IInteractable
 {
@@ -25,6 +26,15 @@ public class PipeController : MonoBehaviour, IInteractable
     private Vector2Int cursorPosition;
     private bool active;
     private bool gameWon;
+
+    private EventHandler _eventHandler;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
+    {
+        _eventHandler = eventHandler;
+    }
+
     private void Awake()
     {
         _controls = new Controls();
@@ -257,7 +267,7 @@ public class PipeController : MonoBehaviour, IInteractable
             Debug.Log("Win");
             // SoundController.instance.PlaySoundRandomPitch(gameWin);
             _animator.SetTrigger("Win");
-            DayCounter.Instance.SetTrigger("Pipes");
+            _eventHandler.SetDayCounterTrigger("Pipes");
 
             /*if (DayCounter.Instance.currentDay == 2)
             {
@@ -283,7 +293,7 @@ public class PipeController : MonoBehaviour, IInteractable
         {
             Debug.Log("Loose");
             // SoundController.instance.PlaySoundRandomPitch(gameLoose);
-            DeathController.instance.TriggerDeath("�� ��������� ������ ��������� � �����������");
+            DeathController.instance.TriggerDeath("Вы допустили утечку кислорода и задохнулись");
         }
     }
 }

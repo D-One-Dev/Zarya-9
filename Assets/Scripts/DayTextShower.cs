@@ -7,6 +7,6 @@ public class DayTextShower : MonoBehaviour
     void Awake()
     {
         int currentDay = PlayerPrefs.GetInt("Day", 1);
-        dayText.text = "Δενό " + currentDay;
+        dayText.text = "Π”ΠµΠ½Ρ " + currentDay;
     }
 }

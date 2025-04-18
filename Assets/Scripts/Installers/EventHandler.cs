@@ -19,6 +19,8 @@ public class EventHandler : MonoBehaviour
     public event Action<MinigameSelector> OnMinigameTrigger;
     public event Action<String> OnMinigameKeyPressed;
     public event Action OnGoToNextDay;
+    public event Action<string> OnSetDayCounterTrigger;
+    public event Action OnResetDay;
 
     public void StartSceneLoading(string sceneName)
     {
@@ -103,5 +105,15 @@ public class EventHandler : MonoBehaviour
     public void GoToNextDay()
     {
         OnGoToNextDay?.Invoke();
+    }
+
+    public void SetDayCounterTrigger(string trigger)
+    {
+        OnSetDayCounterTrigger?.Invoke(trigger);
+    }
+
+    public void ResetDay()
+    {
+        OnResetDay?.Invoke();
     }
 }

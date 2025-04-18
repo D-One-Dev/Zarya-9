@@ -25,6 +25,8 @@ public class RoverGame : MonoBehaviour, IInteractable
     private bool _isActive;
     private bool _isGameWon;
     private bool _hasItem;
+    private EventHandler _eventHandler;
+    private DayCounter _dayCounter;
     // private void Awake()
     // {
     //     _controls = new Controls();
@@ -43,9 +45,11 @@ public class RoverGame : MonoBehaviour, IInteractable
     // }
 
     [Inject]
-    public void Construct(EventHandler eventHandler)
+    public void Construct(EventHandler eventHandler, DayCounter dayCounter)
     {
-        eventHandler.OnMinigameKeyPressed += CheckKey;
+        _eventHandler = eventHandler;
+        _eventHandler.OnMinigameKeyPressed += CheckKey;
+        _dayCounter = dayCounter;
     }
 
     private void CheckKey(string key)
@@ -258,7 +262,7 @@ public class RoverGame : MonoBehaviour, IInteractable
         if (_currentEnergy == 0)
         {
             // SoundController.instance.PlaySoundRandomPitch(gameLoose);
-            DeathController.instance.TriggerDeath("������� �� ���� ��������� ����������� ���������. �� �������� �� ���� � ������� �� ������");
+            DeathController.instance.TriggerDeath("Луноход не смог доставить необходимые материалы. Вы остались на луне и погибли от голода");
             Debug.Log("Loose");
         }
     }
@@ -291,11 +295,13 @@ public class RoverGame : MonoBehaviour, IInteractable
             // SoundController.instance.PlaySoundRandomPitch(gameWin);
             _isGameWon = true;
             _animator.SetTrigger("Win");
-            DayCounter.Instance.SetTrigger("Rover");
+            _eventHandler.SetDayCounterTrigger("Rover");
+            // DayCounter.Instance.SetTrigger("Rover");
             Dispenser.Instance.SpawnOre();
             SylphietteDialogueSystem.Instance.StartNextDialogue();
 
-            if (DayCounter.Instance.currentDay == 1)
+            //if (DayCounter.Instance.currentDay == 1)
+            if (_dayCounter.CurrentDay == 1)
             {
                 StartCoroutine(ShowNextMessage());
             }

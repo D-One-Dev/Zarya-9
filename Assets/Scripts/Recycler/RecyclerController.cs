@@ -1,5 +1,6 @@
 using Sylphiette;
 using UnityEngine;
+using Zenject;
 
 public class RecyclerController : MonoBehaviour
 {
@@ -15,13 +16,24 @@ public class RecyclerController : MonoBehaviour
     private bool[] day3Completed;
     private bool[] day5Completed;
 
+    private EventHandler _eventHandler;
+    private DayCounter _dayCounter;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler, DayCounter dayCounter)
+    {
+        _eventHandler = eventHandler;
+        _dayCounter = dayCounter;
+    }
+
     private void Start()
     {
         day1Completed = new bool[day1Tasks.Length];
         day3Completed = new bool[day3Tasks.Length];
         day5Completed = new bool[day5Tasks.Length];
 
-        currentDay = DayCounter.Instance.currentDay;
+        //currentDay = DayCounter.Instance.currentDay;
+        currentDay = _dayCounter.CurrentDay;
 
         //switch (currentDay)
         //{
@@ -148,7 +160,8 @@ public class RecyclerController : MonoBehaviour
         if (completed)
         {
             Debug.Log("Items for recycler collected");
-            DayCounter.Instance.SetTrigger("Recycle");
+            //DayCounter.Instance.SetTrigger("Recycle");
+            _eventHandler.SetDayCounterTrigger("Recycle");
         }
     }
 }

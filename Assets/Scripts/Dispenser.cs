@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Zenject;
 
 public class Dispenser : MonoBehaviour
 {
@@ -10,11 +11,22 @@ public class Dispenser : MonoBehaviour
 
     public static Dispenser Instance;
 
-    private void Awake() => Instance = this;
+    private DayCounter _dayCounter;
+
+    [Inject]
+    public void Construct(DayCounter dayCounter)
+    {
+        _dayCounter = dayCounter;
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
-        switch (DayCounter.Instance.currentDay)
+        switch (_dayCounter.CurrentDay)
         {
             case 2:
                 Instantiate(recycledPlastic, spawnPlace.position, Quaternion.identity);
@@ -34,8 +46,8 @@ public class Dispenser : MonoBehaviour
     public void SpawnOre()
     {
         GameObject spawnedObject;
-        
-        switch (DayCounter.Instance.currentDay)
+
+        switch (_dayCounter.CurrentDay)
         {
             case 1:
                 print("spawned");

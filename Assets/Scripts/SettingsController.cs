@@ -41,7 +41,7 @@ public class SettingsController : IInitializable
     private void ApplyVolume()
     {
         _volumeSlider.value = _volume;
-        _volumeLabel.text = "Громоксть: " + _volume;
+        _volumeLabel.text = "Р“СЂРѕРјРєРѕСЃС‚СЊ: " + _volume;
         PlayerPrefs.SetInt("Volume", _volume);
     }
 
@@ -73,23 +73,23 @@ public class SettingsController : IInitializable
         switch (_quality)
         {
             case 0:
-                _qualityLabel.text = "Качество графики: минимальное";
+                _qualityLabel.text = "РљР°С‡РµСЃС‚РІРѕ РіСЂР°С„РёРєРё: РјРёРЅРёРјР°Р»СЊРЅРѕРµ";
                 QualitySettings.SetQualityLevel(0);
                 break;
             case 1:
-                _qualityLabel.text = "Качество графики: среднее";
+                _qualityLabel.text = "РљР°С‡РµСЃС‚РІРѕ РіСЂР°С„РёРєРё: СЃСЂРµРґРЅРµРµ";
                 QualitySettings.SetQualityLevel(2);
                 break;
             case 2:
-                _qualityLabel.text = "Качество графики: высокое";
+                _qualityLabel.text = "РљР°С‡РµСЃС‚РІРѕ РіСЂР°С„РёРєРё: РІС‹СЃРѕРєРѕРµ";
                 QualitySettings.SetQualityLevel(4);
                 break;
             case 3:
-                _qualityLabel.text = "Качество графики: ультра";
+                _qualityLabel.text = "РљР°С‡РµСЃС‚РІРѕ РіСЂР°С„РёРєРё: СѓР»СЊС‚СЂР°";
                 QualitySettings.SetQualityLevel(5);
                 break;
             default:
-                _qualityLabel.text = "Качество графики: минимальное";
+                _qualityLabel.text = "РљР°С‡РµСЃС‚РІРѕ РіСЂР°С„РёРєРё: РјРёРЅРёРјР°Р»СЊРЅРѕРµ";
                 QualitySettings.SetQualityLevel(0);
                 break;
         }

@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Zenject;
 
 namespace Sylphiette
 {
     public class SylphietteDialogueSystem : MonoBehaviour
     {
         [SerializeField] private TextViewer textViewer;
-        
+
         public SylphietteDialogueBlock[] dialogueBlocks1;
         public SylphietteDialogueBlock[] dialogueBlocks2;
         public SylphietteDialogueBlock[] dialogueBlocks3;
@@ -16,10 +17,21 @@ namespace Sylphiette
         public SylphietteDialogueBlock[] dialogueBlocks7;
 
         public static SylphietteDialogueSystem Instance;
-        
+
         private int _currentDialogue;
-        
-        private void Awake() => Instance = this;
+
+        private DayCounter _dayCounter;
+
+        [Inject]
+        public void Construct(DayCounter dayCounter)
+        {
+            _dayCounter = dayCounter;
+        }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start()
         {
@@ -35,35 +47,35 @@ namespace Sylphiette
         public void StartNextDialogue()
         {
             _currentDialogue++;
-            
+
             ChooseDialogue();
         }
 
         private void ChooseDialogue()
         {
             StopAllCoroutines();
-            
-            switch (DayCounter.Instance.currentDay)
+
+            switch (_dayCounter.CurrentDay)
             {
-                case 1: 
+                case 1:
                     StartCoroutine(ShowDialogue(dialogueBlocks1));
                     break;
-                case 2: 
+                case 2:
                     StartCoroutine(ShowDialogue(dialogueBlocks2));
                     break;
-                case 3: 
+                case 3:
                     StartCoroutine(ShowDialogue(dialogueBlocks3));
                     break;
-                case 4: 
+                case 4:
                     StartCoroutine(ShowDialogue(dialogueBlocks4));
                     break;
-                case 5: 
+                case 5:
                     StartCoroutine(ShowDialogue(dialogueBlocks5));
                     break;
-                case 6: 
+                case 6:
                     StartCoroutine(ShowDialogue(dialogueBlocks6));
                     break;
-                case 7: 
+                case 7:
                     StartCoroutine(ShowDialogue(dialogueBlocks7));
                     break;
             }

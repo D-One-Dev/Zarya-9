@@ -2,6 +2,7 @@
 using Sylphiette;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace _3D_Printer
 {
@@ -12,7 +13,7 @@ namespace _3D_Printer
         [SerializeField] private List<string> day7Items = new List<string>();
 
         [SerializeField] private List<bool> isItemReceived;
-        
+
         [SerializeField] private TMP_Text showItemsList;
 
         [SerializeField] private GameObject day2OutputItem;
@@ -20,10 +21,20 @@ namespace _3D_Printer
         [SerializeField] private GameObject day7OutputItem;
         [SerializeField] private Transform spawnPlace;
 
+        private EventHandler _eventHandler;
+        private DayCounter _dayCounter;
+
+        [Inject]
+        public void Construct(DayCounter dayCounter, EventHandler eventHandler)
+        {
+            _eventHandler = eventHandler;
+            _dayCounter = dayCounter;
+        }
+
         private void Start()
         {
-            Debug.Log(DayCounter.Instance.currentDay);
-            switch (DayCounter.Instance.currentDay)
+            Debug.Log("Current day: " + _dayCounter.CurrentDay);
+            switch (_dayCounter.CurrentDay)
             {
                 case 2:
                     showItemsList.text = "Требуются следующие предметы для переработки:";
@@ -70,7 +81,7 @@ namespace _3D_Printer
         {
             if (other.TryGetComponent(out Item item))
             {
-                switch (DayCounter.Instance.currentDay)
+                switch (_dayCounter.CurrentDay)
                 {
                     case 2:
                         if (day2Items.Contains(item.itemName))
@@ -164,7 +175,7 @@ namespace _3D_Printer
         public void SpawnOutputItem()
         {
             GameObject spawnedObject;
-            switch (DayCounter.Instance.currentDay)
+            switch (_dayCounter.CurrentDay)
             {
                 case 2:
                     spawnedObject = Instantiate(day2OutputItem, spawnPlace.position, Quaternion.identity);
@@ -172,7 +183,7 @@ namespace _3D_Printer
                     spawnedObject.transform.localScale = new Vector3(35, 35, 35);
 
                     showItemsList.text = "Предмет успешно получен";
-                    DayCounter.Instance.SetTrigger("3D");
+                    _eventHandler.SetDayCounterTrigger("3D");
                     break;
                 case 4:
                     spawnedObject = Instantiate(day4OutputItem, spawnPlace.position, Quaternion.identity);
@@ -180,25 +191,25 @@ namespace _3D_Printer
                     spawnedObject.transform.localScale = new Vector3(35, 35, 35);
 
                     showItemsList.text = "Предмет успешно получен";
-                    DayCounter.Instance.SetTrigger("3D");
+                    _eventHandler.SetDayCounterTrigger("3D");
                     break;
                 case 7:
                     spawnedObject = Instantiate(day7OutputItem, spawnPlace.position, Quaternion.identity);
 
-                    spawnedObject.transform.localScale = new Vector3(11*1.5f, 13*1.5f, 4*1.5f);
+                    spawnedObject.transform.localScale = new Vector3(11 * 1.5f, 13 * 1.5f, 4 * 1.5f);
 
                     showItemsList.text = "Предмет успешно получен";
-                    DayCounter.Instance.SetTrigger("3D");
+                    _eventHandler.SetDayCounterTrigger("3D");
                     break;
                 default:
                     break;
             }
-            
+
             SylphietteDialogueSystem.Instance.StartNextDialogue();
             //GameObject spawnedObject = Instantiate(outputItem, spawnPlace.position, Quaternion.identity);
 
             //spawnedObject.transform.localScale = new Vector3(1, 1, 1);
-            
+
             //showItemsList.text = "Предмет успешно получен";
             //DayCounter.Instance.SetTrigger("3D");
         }
@@ -213,8 +224,8 @@ namespace _3D_Printer
             return true;
         }
 
-        public void TurnOn() {}
+        public void TurnOn() { }
 
-        public void TurnOff() {}
+        public void TurnOff() { }
     }
 }
