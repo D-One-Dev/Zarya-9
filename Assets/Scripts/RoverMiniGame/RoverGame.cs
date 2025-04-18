@@ -2,6 +2,7 @@ using System.Collections;
 using Sylphiette;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class RoverGame : MonoBehaviour, IInteractable
 {
@@ -17,41 +18,72 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     [SerializeField] private AudioClip roverMove, rockBreak, gameWin, gameLoose, itemGet;
 
-    private int currentEnergy;
-    private MapTile[,] tileGrid;
-    private Controls _controls;
-    private Vector2Int roverPosition;
-    private bool active;
-    private bool gameWon;
-    private bool hasItem;
-    private void Awake()
+    private int _currentEnergy;
+    private MapTile[,] _tileGrid;
+    //private Controls _controls;
+    private Vector2Int _roverPosition;
+    private bool _isActive;
+    private bool _isGameWon;
+    private bool _hasItem;
+    // private void Awake()
+    // {
+    //     _controls = new Controls();
+    //     _controls.Gameplay.Up.performed += ctx => MoveUp();
+    //     _controls.Gameplay.Down.performed += ctx => MoveDown();
+    //     _controls.Gameplay.Left.performed += ctx => MoveLeft();
+    //     _controls.Gameplay.Right.performed += ctx => MoveRight();
+    // }
+    // private void OnEnable()
+    // {
+    //     _controls.Enable();
+    // }
+    // private void OnDisable()
+    // {
+    //     _controls.Disable();
+    // }
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
     {
-        _controls = new Controls();
-        _controls.Gameplay.Up.performed += ctx => MoveUp();
-        _controls.Gameplay.Down.performed += ctx => MoveDown();
-        _controls.Gameplay.Left.performed += ctx => MoveLeft();
-        _controls.Gameplay.Right.performed += ctx => MoveRight();
+        eventHandler.OnMinigameKeyPressed += CheckKey;
     }
-    private void OnEnable()
+
+    private void CheckKey(string key)
     {
-        _controls.Enable();
-    }
-    private void OnDisable()
-    {
-        _controls.Disable();
+        if (_isActive)
+        {
+            switch (key)
+            {
+                case "up":
+                    MoveUp();
+                    break;
+                case "down":
+                    MoveDown();
+                    break;
+                case "left":
+                    MoveLeft();
+                    break;
+                case "right":
+                    MoveRight();
+                    break;
+                default:
+                    Debug.LogWarning("Unknown key: " + key);
+                    break;
+            }
+        }
     }
 
     private void Start()
     {
-        currentEnergy = startEnergy;
-        roverPosition = roverStartPoint;
-        tileGrid = new MapTile[gridSize.x, gridSize.y];
+        _currentEnergy = startEnergy;
+        _roverPosition = roverStartPoint;
+        _tileGrid = new MapTile[gridSize.x, gridSize.y];
         int i = 0;
         int j = 0;
 
         foreach (MapTile tile in tiles)
         {
-            tileGrid[i, j] = tile;
+            _tileGrid[i, j] = tile;
             if (i < gridSize.x - 1) i++;
             else
             {
@@ -63,9 +95,9 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     private void MoveUp()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (/*PlayerInteraction.instance.playerStatus == 1 && */_isActive && !_isGameWon)
         {
-            if (roverPosition.y > 0 && tileGrid[roverPosition.x, roverPosition.y - 1].tileType != "Rock")
+            if (_roverPosition.y > 0 && _tileGrid[_roverPosition.x, _roverPosition.y - 1].tileType != "Rock")
             {
                 CheckItem(new Vector2Int(0, -1));
                 if (CheckWin(new Vector2Int(0, -1)))
@@ -74,21 +106,21 @@ public class RoverGame : MonoBehaviour, IInteractable
                 }
                 else
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.y--;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.y--;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     // SoundController.instance.PlaySoundRandomPitch(roverMove);
                 }
             }
-            else if (roverPosition.y > 0 && tileGrid[roverPosition.x, roverPosition.y - 1].tileType == "Rock")
+            else if (_roverPosition.y > 0 && _tileGrid[_roverPosition.x, _roverPosition.y - 1].tileType == "Rock")
             {
                 if (canBreakRocks)
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.y--;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.y--;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     LooseEnergy();
@@ -100,9 +132,9 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     private void MoveDown()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (/*PlayerInteraction.instance.playerStatus == 1 && */_isActive && !_isGameWon)
         {
-            if (roverPosition.y < gridSize.y - 1 && tileGrid[roverPosition.x, roverPosition.y + 1].tileType != "Rock")
+            if (_roverPosition.y < gridSize.y - 1 && _tileGrid[_roverPosition.x, _roverPosition.y + 1].tileType != "Rock")
             {
                 CheckItem(new Vector2Int(0, 1));
                 if (CheckWin(new Vector2Int(0, 1)))
@@ -111,21 +143,21 @@ public class RoverGame : MonoBehaviour, IInteractable
                 }
                 else
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.y++;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.y++;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     // SoundController.instance.PlaySoundRandomPitch(roverMove);
                 }
             }
-            else if (roverPosition.y < gridSize.y - 1 && tileGrid[roverPosition.x, roverPosition.y + 1].tileType == "Rock")
+            else if (_roverPosition.y < gridSize.y - 1 && _tileGrid[_roverPosition.x, _roverPosition.y + 1].tileType == "Rock")
             {
                 if (canBreakRocks)
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.y++;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.y++;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     LooseEnergy();
@@ -137,9 +169,9 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     private void MoveLeft()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (/*PlayerInteraction.instance.playerStatus == 1 && */_isActive && !_isGameWon)
         {
-            if (roverPosition.x > 0 && tileGrid[roverPosition.x - 1, roverPosition.y].tileType != "Rock")
+            if (_roverPosition.x > 0 && _tileGrid[_roverPosition.x - 1, _roverPosition.y].tileType != "Rock")
             {
                 CheckItem(new Vector2Int(-1, 0));
                 if (CheckWin(new Vector2Int(-1, 0)))
@@ -148,21 +180,21 @@ public class RoverGame : MonoBehaviour, IInteractable
                 }
                 else
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.x--;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.x--;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     // SoundController.instance.PlaySoundRandomPitch(roverMove);
                 }
             }
-            else if (roverPosition.x > 0 && tileGrid[roverPosition.x - 1, roverPosition.y].tileType == "Rock")
+            else if (_roverPosition.x > 0 && _tileGrid[_roverPosition.x - 1, _roverPosition.y].tileType == "Rock")
             {
                 if (canBreakRocks)
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.x--;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.x--;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     LooseEnergy();
@@ -174,9 +206,9 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     private void MoveRight()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (/*PlayerInteraction.instance.playerStatus == 1 && */_isActive && !_isGameWon)
         {
-            if (roverPosition.x < gridSize.x - 1 && tileGrid[roverPosition.x + 1, roverPosition.y].tileType != "Rock")
+            if (_roverPosition.x < gridSize.x - 1 && _tileGrid[_roverPosition.x + 1, _roverPosition.y].tileType != "Rock")
             {
                 CheckItem(new Vector2Int(1, 0));
                 if (CheckWin(new Vector2Int(1, 0)))
@@ -185,21 +217,21 @@ public class RoverGame : MonoBehaviour, IInteractable
                 }
                 else
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.x++;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.x++;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     // SoundController.instance.PlaySoundRandomPitch(roverMove);
                 }
             }
-            else if (roverPosition.x < gridSize.x - 1 && tileGrid[roverPosition.x + 1, roverPosition.y].tileType == "Rock")
+            else if (_roverPosition.x < gridSize.x - 1 && _tileGrid[_roverPosition.x + 1, _roverPosition.y].tileType == "Rock")
             {
                 if (canBreakRocks)
                 {
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Ground";
-                    roverPosition.x++;
-                    tileGrid[roverPosition.x, roverPosition.y].tileType = "Rover";
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Ground";
+                    _roverPosition.x++;
+                    _tileGrid[_roverPosition.x, _roverPosition.y].tileType = "Rover";
                     UpdateGrid();
                     LooseEnergy();
                     LooseEnergy();
@@ -211,9 +243,9 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     private void UpdateGrid()
     {
-        if (roverPosition != roverStartPoint) tileGrid[roverStartPoint.x, roverStartPoint.y].tileType = "Base";
-        if (roverPosition != itemPoint && hasItem) tileGrid[itemPoint.x, itemPoint.y].tileType = "Ground";
-        foreach (MapTile tile in tileGrid)
+        if (_roverPosition != roverStartPoint) _tileGrid[roverStartPoint.x, roverStartPoint.y].tileType = "Base";
+        if (_roverPosition != itemPoint && _hasItem) _tileGrid[itemPoint.x, itemPoint.y].tileType = "Ground";
+        foreach (MapTile tile in _tileGrid)
         {
             tile.UpdateTile();
         }
@@ -221,9 +253,9 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     private void LooseEnergy()
     {
-        if (currentEnergy > 0) currentEnergy--;
-        energySprite.fillAmount = (float)currentEnergy / startEnergy;
-        if (currentEnergy == 0)
+        if (_currentEnergy > 0) _currentEnergy--;
+        energySprite.fillAmount = (float)_currentEnergy / startEnergy;
+        if (_currentEnergy == 0)
         {
             // SoundController.instance.PlaySoundRandomPitch(gameLoose);
             DeathController.instance.TriggerDeath("������� �� ���� ��������� ����������� ���������. �� �������� �� ���� � ������� �� ������");
@@ -233,31 +265,31 @@ public class RoverGame : MonoBehaviour, IInteractable
 
     public void TurnOn()
     {
-        active = true;
+        _isActive = true;
         gameUI.SetActive(true);
     }
 
     public void TurnOff()
     {
-        active = false;
+        _isActive = false;
         gameUI.SetActive(false);
     }
 
     public void CheckItem(Vector2Int dir)
     {
-        if (roverPosition + dir == itemPoint)
+        if (_roverPosition + dir == itemPoint)
         {
-            hasItem = true;
+            _hasItem = true;
             // SoundController.instance.PlaySoundRandomPitch(itemGet);
         }
     }
 
     private bool CheckWin(Vector2Int dir)
     {
-        if (roverPosition + dir == roverStartPoint && hasItem)
+        if (_roverPosition + dir == roverStartPoint && _hasItem)
         {
             // SoundController.instance.PlaySoundRandomPitch(gameWin);
-            gameWon = true;
+            _isGameWon = true;
             _animator.SetTrigger("Win");
             DayCounter.Instance.SetTrigger("Rover");
             Dispenser.Instance.SpawnOre();

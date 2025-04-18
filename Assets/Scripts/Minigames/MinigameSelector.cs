@@ -11,7 +11,7 @@ public class MinigameSelector : MonoBehaviour
     [Inject]
     public void Construct(EventHandler eventHandler)
     {
-        eventHandler.OnMiniGameTrigger += SwitchState;
+        eventHandler.OnMinigameTrigger += SwitchState;
     }
 
     public void TurnOn()
@@ -30,7 +30,10 @@ public class MinigameSelector : MonoBehaviour
     {
         int day = PlayerPrefs.GetInt("Day", 1);
         _currentScript?.TurnOff();
-        maps[day - 1].SetActive(false);
+        if (maps[day - 1] != null)
+        {
+            maps[day - 1].SetActive(false);
+        }
     }
 
     private void SwitchState(MinigameSelector minigame)
