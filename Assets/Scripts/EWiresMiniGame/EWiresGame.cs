@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sylphiette;
 using UnityEngine;
+using Zenject;
 
 namespace EWiresMiniGame
 {
@@ -23,21 +24,63 @@ namespace EWiresMiniGame
 
         private bool _isActive;
 
-        private Controls _controls;
+        // private Controls _controls;
+        [Inject]
+        public void Construct(EventHandler eventHandler)
+        {
+            eventHandler.OnMinigameKeyPressed += CheckKey;
+        }
+
+        private void CheckKey(string key)
+        {
+            if (_isActive)
+            {
+                switch (key)
+                {
+                    case "1":
+                        SelectWire(0);
+                        break;
+                    case "2":
+                        SelectWire(1);
+                        break;
+                    case "3":
+                        SelectWire(2);
+                        break;
+                    case "4":
+                        SelectWire(3);
+                        break;
+                    case "up":
+                        MoveUp();
+                        break;
+                    case "down":
+                        MoveDown();
+                        break;
+                    case "left":
+                        MoveLeft();
+                        break;
+                    case "right":
+                        MoveRight();
+                        break;
+                    default:
+                        Debug.LogWarning("Unknown key: " + key);
+                        break;
+                }
+            }
+        }
 
         private void Awake()
         {
-            _controls = new Controls();
+            // _controls = new Controls();
 
-            _controls.Gameplay.One.performed += ctx => SelectWire(0);
-            _controls.Gameplay.Two.performed += ctx => SelectWire(1);
-            _controls.Gameplay.Three.performed += ctx => SelectWire(2);
-            _controls.Gameplay.Four.performed += ctx => SelectWire(3);
+            // _controls.Gameplay.One.performed += ctx => SelectWire(0);
+            // _controls.Gameplay.Two.performed += ctx => SelectWire(1);
+            // _controls.Gameplay.Three.performed += ctx => SelectWire(2);
+            // _controls.Gameplay.Four.performed += ctx => SelectWire(3);
 
-            _controls.Gameplay.Up.performed += ctx => MoveUp();
-            _controls.Gameplay.Down.performed += ctx => MoveDown();
-            _controls.Gameplay.Left.performed += ctx => MoveLeft();
-            _controls.Gameplay.Right.performed += ctx => MoveRight();
+            // _controls.Gameplay.Up.performed += ctx => MoveUp();
+            // _controls.Gameplay.Down.performed += ctx => MoveDown();
+            // _controls.Gameplay.Left.performed += ctx => MoveLeft();
+            // _controls.Gameplay.Right.performed += ctx => MoveRight();
 
             UnSelectAll();
             wires[0].Select();
@@ -66,7 +109,7 @@ namespace EWiresMiniGame
 
         private void MoveUp()
         {
-            if (PlayerInteraction.instance.playerStatus != 1 || !_isActive || _currentWire == null) return;
+            if (/*PlayerInteraction.instance.playerStatus != 1 || */!_isActive || _currentWire == null) return;
 
             if (_currentWire.transform.localPosition.y + 170 > 450) return;
 
@@ -80,7 +123,7 @@ namespace EWiresMiniGame
 
         private void MoveDown()
         {
-            if (PlayerInteraction.instance.playerStatus != 1 || !_isActive || _currentWire == null) return;
+            if (/*PlayerInteraction.instance.playerStatus != 1 || */!_isActive || _currentWire == null) return;
 
             if (_currentWire.transform.localPosition.y - 170 < -450) return;
 
@@ -93,7 +136,7 @@ namespace EWiresMiniGame
         }
         private void MoveLeft()
         {
-            if (PlayerInteraction.instance.playerStatus != 1 || !_isActive || _currentWire == null) return;
+            if (/*PlayerInteraction.instance.playerStatus != 1 || */!_isActive || _currentWire == null) return;
 
             if (_currentWire.transform.localPosition.x - 170 < -520) return;
 
@@ -106,7 +149,7 @@ namespace EWiresMiniGame
         }
         private void MoveRight()
         {
-            if (PlayerInteraction.instance.playerStatus != 1 || !_isActive || _currentWire == null) return;
+            if (/*PlayerInteraction.instance.playerStatus != 1 || */!_isActive || _currentWire == null) return;
 
             if (_currentWire.transform.localPosition.x + 170 > 520) return;
 
@@ -164,15 +207,15 @@ namespace EWiresMiniGame
 
         private void SelectWire(int type)
         {
-            if (PlayerInteraction.instance.playerStatus == 1)
-            {
-                if (_isEndPointActive[type]) return;
+            // if (PlayerInteraction.instance.playerStatus == 1)
+            // {
+            if (_isEndPointActive[type]) return;
 
-                UnSelectAll();
-                wires[type].Select();
+            UnSelectAll();
+            wires[type].Select();
 
-                _currentWire = wires[type];
-            }
+            _currentWire = wires[type];
+            // }
         }
 
         private void UnSelectAll()
@@ -183,27 +226,25 @@ namespace EWiresMiniGame
             }
         }
 
-        private void OnEnable()
-        {
-            _controls.Enable();
-        }
-        private void OnDisable()
-        {
-            _controls.Disable();
-        }
+        // private void OnEnable()
+        // {
+        //     _controls.Enable();
+        // }
+        // private void OnDisable()
+        // {
+        //     _controls.Disable();
+        // }
 
         public void TurnOn()
         {
             Cursor.lockState = CursorLockMode.None;
             _isActive = true;
-            Debug.Log("Wires turned on");
         }
 
         public void TurnOff()
         {
             Cursor.lockState = CursorLockMode.Locked;
             _isActive = false;
-            Debug.Log("Wires turned off");
         }
     }
 }

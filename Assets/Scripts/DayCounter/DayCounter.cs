@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 public class DayCounter : MonoBehaviour
 {
@@ -19,26 +20,30 @@ public class DayCounter : MonoBehaviour
     public static DayCounter Instance;
     public int currentDay = 1;
 
-    public bool canSleep;
-    private bool isSleeping;
+    public bool _canSleep;
+    private bool _isSleeping;
+    private EventHandler _eventHandler;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
+    {
+        _eventHandler = eventHandler;
+        _eventHandler.OnGoToNextDay += GoToNextDay;
+    }
 
     private void Awake()
     {
         Instance = this;
         currentDay = PlayerPrefs.GetInt("Day", 1);
     }
-    void Start()
-    {
-        //Instance = this;
-    }
 
     public void GoToNextDay()
     {
-        if (!isSleeping)
+        if (!_isSleeping)
         {
-            //CheckSleep();
-            if (canSleep)
+            if (CheckSleep())
             {
+                Debug.Log("Sleeping");
                 PlayerPrefs.SetFloat("PlayerPosX", player.position.x);
                 PlayerPrefs.SetFloat("PlayerPosY", player.position.y);
                 PlayerPrefs.SetFloat("PlayerPosZ", player.position.z);
@@ -50,8 +55,13 @@ public class DayCounter : MonoBehaviour
                 PlayerPrefs.SetInt("Day", currentDay);
 
                 PlayerPrefs.Save();
-                //_sceneLoader.StartSceneLoading("Gameplay");
-                isSleeping = true;
+                _eventHandler.StartSceneLoading("Gameplay");
+
+                _isSleeping = true;
+            }
+            else
+            {
+                Debug.Log("Can't sleep yet");
             }
         }
     }
@@ -64,140 +74,84 @@ public class DayCounter : MonoBehaviour
 
     public void SetTrigger(string trigger)
     {
+        string[] triggers;
         switch (currentDay)
         {
             case 1:
-                if (Array.IndexOf(day1Triggers, trigger) != -1)
-                {
-                    day1Triggers[Array.IndexOf(day1Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day1Triggers;
                 break;
             case 2:
-                if (Array.IndexOf(day2Triggers, trigger) != -1)
-                {
-                    day2Triggers[Array.IndexOf(day2Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day2Triggers;
                 break;
             case 3:
-                if (Array.IndexOf(day3Triggers, trigger) != -1)
-                {
-                    day3Triggers[Array.IndexOf(day3Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day3Triggers;
                 break;
             case 4:
-                if (Array.IndexOf(day4Triggers, trigger) != -1)
-                {
-                    day4Triggers[Array.IndexOf(day4Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day4Triggers;
                 break;
             case 5:
-                if (Array.IndexOf(day5Triggers, trigger) != -1)
-                {
-                    day5Triggers[Array.IndexOf(day5Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day5Triggers;
                 break;
             case 6:
-                if (Array.IndexOf(day6Triggers, trigger) != -1)
-                {
-                    day6Triggers[Array.IndexOf(day6Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day6Triggers;
                 break;
             case 7:
-                if (Array.IndexOf(day7Triggers, trigger) != -1)
-                {
-                    day7Triggers[Array.IndexOf(day7Triggers, trigger)] = null;
-                }
-                else
-                {
-                    Debug.LogError("Cannot find trigger " + trigger);
-                }
+                triggers = day7Triggers;
                 break;
             default:
+                triggers = day1Triggers;
                 break;
         }
 
-        CheckSleep();
+        if (Array.IndexOf(triggers, trigger) != -1)
+        {
+            triggers[Array.IndexOf(triggers, trigger)] = null;
+        }
+        else
+        {
+            Debug.LogError("Cannot find trigger " + trigger);
+        }
     }
 
-    private void CheckSleep()
+    private bool CheckSleep()
     {
-        bool flag = false;
+        string[] triggers;
         switch (currentDay)
         {
             case 1:
-                foreach (string trigger in day1Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day1Triggers;
                 break;
             case 2:
-                foreach (string trigger in day2Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day2Triggers;
                 break;
             case 3:
-                foreach (string trigger in day3Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day3Triggers;
                 break;
             case 4:
-                foreach (string trigger in day4Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day4Triggers;
                 break;
             case 5:
-                foreach (string trigger in day5Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day5Triggers;
                 break;
             case 6:
-                foreach (string trigger in day6Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day6Triggers;
                 break;
             case 7:
-                foreach (string trigger in day7Triggers)
-                {
-                    if (trigger != null) flag = true;
-                }
+                triggers = day7Triggers;
                 break;
             default:
+                triggers = day1Triggers;
                 break;
         }
 
-        if (!flag)
+        foreach (string trigger in triggers)
         {
-            canSleep = true;
+            if (trigger != null)
+            {
+                return false;
+            }
         }
-        else canSleep = false;
+
+        return true;
     }
 }

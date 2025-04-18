@@ -18,6 +18,7 @@ public class EventHandler : MonoBehaviour
     public event Action OnResumeGame;
     public event Action<MinigameSelector> OnMinigameTrigger;
     public event Action<String> OnMinigameKeyPressed;
+    public event Action OnGoToNextDay;
 
     public void StartSceneLoading(string sceneName)
     {
@@ -97,5 +98,10 @@ public class EventHandler : MonoBehaviour
     public void PressMinigameKey(string key)
     {
         OnMinigameKeyPressed?.Invoke(key);
+    }
+
+    public void GoToNextDay()
+    {
+        OnGoToNextDay?.Invoke();
     }
 }

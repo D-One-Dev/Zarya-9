@@ -59,8 +59,8 @@ public class RecyclerController : MonoBehaviour
                     break;
             }
 
-            PickupController.instance.DropObjectConstant();
-            
+            //PickupController.instance.DropObjectConstant();
+
             SylphietteDialogueSystem.Instance.StartNextDialogue();
 
             CheckTask();
@@ -72,7 +72,7 @@ public class RecyclerController : MonoBehaviour
         switch (currentDay)
         {
             case 1:
-                for(int i = 0; i < day1Tasks.Length; i++)
+                for (int i = 0; i < day1Tasks.Length; i++)
                 {
                     if (collision.TryGetComponent(out Item item))
                     {
@@ -87,7 +87,7 @@ public class RecyclerController : MonoBehaviour
                     {
                         if (item.itemName == day3Tasks[i]) return i;
                     }
-                    
+
                     //if (collision.CompareTag(day3Tasks[i])) return i;
                 }
                 return -1;
@@ -98,7 +98,7 @@ public class RecyclerController : MonoBehaviour
                     {
                         if (item.itemName == day5Tasks[i]) return i;
                     }
-                    
+
                     //if (collision.CompareTag(day5Tasks[i])) return i;
                 }
                 return -1;
@@ -113,7 +113,7 @@ public class RecyclerController : MonoBehaviour
         switch (currentDay)
         {
             case 1:
-                foreach(bool task in day1Completed)
+                foreach (bool task in day1Completed)
                 {
                     if (!task)
                     {
