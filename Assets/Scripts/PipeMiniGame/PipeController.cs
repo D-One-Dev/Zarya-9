@@ -17,14 +17,11 @@ public class PipeController : MonoBehaviour, IInteractable
     [SerializeField] private Animator _animator;
 
     [SerializeField] private AudioClip cursorMove, pipeRotate, gameWin, gameLoose;
-
-    private Vector2Int currentPipe = -Vector2Int.one;
     [SerializeField] private int currentAir;
     private Pipe[,] tileGrid;
     private Image[,] cursorGrid;
-    private Controls _controls;
     private Vector2Int cursorPosition;
-    private bool active;
+    private bool _isActive;
     private bool gameWon;
 
     private EventHandler _eventHandler;
@@ -33,24 +30,38 @@ public class PipeController : MonoBehaviour, IInteractable
     public void Construct(EventHandler eventHandler)
     {
         _eventHandler = eventHandler;
+        _eventHandler.OnMinigameKeyPressed += CheckKey;
     }
 
-    private void Awake()
+    private void CheckKey(string key)
     {
-        _controls = new Controls();
-        _controls.Gameplay.Up.performed += ctx => MoveUp();
-        _controls.Gameplay.Down.performed += ctx => MoveDown();
-        _controls.Gameplay.Left.performed += ctx => MoveLeft();
-        _controls.Gameplay.Right.performed += ctx => MoveRight();
-        _controls.Gameplay.Space.performed += ctx => Use();
-    }
-    private void OnEnable()
-    {
-        _controls.Enable();
-    }
-    private void OnDisable()
-    {
-        _controls.Disable();
+        if (_isActive)
+        {
+            switch (key)
+            {
+                case "up":
+                    MoveUp();
+                    break;
+                case "down":
+                    MoveDown();
+                    break;
+                case "left":
+                    MoveLeft();
+                    break;
+                case "right":
+                    MoveRight();
+                    break;
+                case "rotateRight":
+                    RotateRight();
+                    break;
+                case "rotateLeft":
+                    RotateLeft();
+                    break;
+                default:
+                    Debug.LogWarning("Unknown key: " + key);
+                    break;
+            }
+        }
     }
 
     private void Start()
@@ -93,9 +104,8 @@ public class PipeController : MonoBehaviour, IInteractable
 
     private void MoveUp()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (_isActive && !gameWon)
         {
-            if (currentPipe == -Vector2Int.one)
             {
                 if (cursorPosition.y > 0)
                 {
@@ -108,9 +118,8 @@ public class PipeController : MonoBehaviour, IInteractable
 
     private void MoveDown()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (_isActive && !gameWon)
         {
-            if (currentPipe == -Vector2Int.one)
             {
                 if (cursorPosition.y < gridSize.y - 1)
                 {
@@ -123,9 +132,8 @@ public class PipeController : MonoBehaviour, IInteractable
 
     private void MoveLeft()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (_isActive && !gameWon)
         {
-            if (currentPipe == -Vector2Int.one)
             {
                 if (cursorPosition.x > 0)
                 {
@@ -133,20 +141,13 @@ public class PipeController : MonoBehaviour, IInteractable
                     UpdateCursor();
                 }
             }
-            else
-            {
-                tileGrid[cursorPosition.x, cursorPosition.y].RotatePipe(false);
-                UpdatePipes();
-                // SoundController.instance.PlaySoundRandomPitch(pipeRotate);
-            }
         }
     }
 
     private void MoveRight()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active && !gameWon)
+        if (_isActive && !gameWon)
         {
-            if (currentPipe == -Vector2Int.one)
             {
                 if (cursorPosition.x < gridSize.x - 1)
                 {
@@ -154,24 +155,34 @@ public class PipeController : MonoBehaviour, IInteractable
                     UpdateCursor();
                 }
             }
-            else
-            {
-                tileGrid[cursorPosition.x, cursorPosition.y].RotatePipe(true);
-                UpdatePipes();
-                // SoundController.instance.PlaySoundRandomPitch(pipeRotate);
-            }
+        }
+    }
+
+    private void RotateLeft()
+    {
+        {
+            tileGrid[cursorPosition.x, cursorPosition.y].RotatePipe(false);
+            UpdatePipes();
+        }
+    }
+
+    private void RotateRight()
+    {
+        {
+            tileGrid[cursorPosition.x, cursorPosition.y].RotatePipe(true);
+            UpdatePipes();
         }
     }
 
     public void TurnOn()
     {
-        active = true;
+        _isActive = true;
         gameUI.SetActive(true);
     }
 
     public void TurnOff()
     {
-        active = false;
+        _isActive = false;
         gameUI.SetActive(false);
     }
 
@@ -184,20 +195,6 @@ public class PipeController : MonoBehaviour, IInteractable
 
         cursorGrid[cursorPosition.x, cursorPosition.y].color = Color.green;
         // SoundController.instance.PlaySoundRandomPitch(cursorMove);
-    }
-
-    private void Use()
-    {
-        if (currentPipe == -Vector2Int.one)
-        {
-            currentPipe = cursorPosition;
-            cursorGrid[cursorPosition.x, cursorPosition.y].color = Color.red;
-        }
-        else
-        {
-            currentPipe = -Vector2Int.one;
-            cursorGrid[cursorPosition.x, cursorPosition.y].color = Color.green;
-        }
     }
 
     private void UpdatePipes()
@@ -287,7 +284,7 @@ public class PipeController : MonoBehaviour, IInteractable
 
         currentAir = startAir - air;
 
-        airSprite.fillAmount = Mathf.Clamp(((float)currentAir / startAir), 0f, 1f);
+        airSprite.fillAmount = Mathf.Clamp((float)currentAir / startAir, 0f, 1f);
 
         if (currentAir <= 0)
         {
