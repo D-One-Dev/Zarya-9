@@ -13,18 +13,13 @@ namespace DatabasePasswordMiniGame
         [SerializeField] private TMP_Text matchText;
         [SerializeField] private TMP_Text placeMatchText;
 
-        [SerializeField] private Transform spawnPlace;
+        [SerializeField] private Transform itemSpawnPoint;
         [SerializeField] private GameObject outputItem;
+        [SerializeField] private string password;
 
-        private bool isActive, isEnteringPassword;
-        private bool isFirstSymbol = true;
-
-        public string password;
+        private bool _isActive;
         private string _enteredPassword;
-
-        private int tryCount = 5;
-
-        private Controls _controls;
+        private int _tryCount = 5;
 
         private EventHandler _eventHandler;
         private DayCounter _dayCounter;
@@ -34,72 +29,51 @@ namespace DatabasePasswordMiniGame
         {
             _eventHandler = eventHandler;
             _dayCounter = dayCounter;
+            _eventHandler.OnMinigameKeyPressed += CheckKey;
+            _eventHandler.OnEnterLetter += EnterLetter;
         }
 
-        private void Awake()
+        private void CheckKey(string key)
         {
-            _controls = new Controls();
-            _controls.Gameplay.Left.performed += ctx => OnAClick();
-            _controls.Gameplay.Enter.performed += ctx => OnEnterClick();
-        }
-
-        private void OnEnable()
-        {
-            _controls.Enable();
-        }
-        private void OnDisable()
-        {
-            _controls.Disable();
-        }
-
-        private void Update()
-        {
-            if (isActive && isEnteringPassword)
+            if (_isActive)
             {
-                if (!isFirstSymbol)
+                switch (key)
                 {
-                    passwordText.text += Input.inputString;
-                    _enteredPassword += Input.inputString;
-                }
-                else isFirstSymbol = false;
-            }
-        }
-
-        private void OnAClick()
-        {
-            if (isActive)
-            {
-                if (PlayerInteraction.instance.playerStatus != 1) return;
-
-                isEnteringPassword = !isEnteringPassword;
-
-                if (isEnteringPassword)
-                {
-                    passwordText.text = "Введенный пароль: ";
-                    _enteredPassword = "";
-                    isFirstSymbol = true;
+                    case "enter":
+                        OnEnterClick();
+                        break;
+                    default:
+                        Debug.LogWarning("Unknown key: " + key);
+                        break;
                 }
             }
+        }
+
+        private void EnterLetter(string letter)
+        {
+            passwordText.text += letter.ToLower();
+            _enteredPassword += letter;
         }
 
         private void OnEnterClick()
         {
-            if (isActive)
+            if (_isActive)
             {
-                if (PlayerInteraction.instance.playerStatus != 1 || isEnteringPassword) return;
-
                 _enteredPassword = _enteredPassword.ToLower();
                 password = password.ToLower();
 
                 if (_enteredPassword != password)
                 {
-                    tryCount--;
-                    tryCountText.text = "Осталось попыток: " + tryCount;
+                    _tryCount--;
+                    tryCountText.text = "Осталось попыток: " + _tryCount;
 
                     matchText.text = "Совпадений букв: " + CountMatchingChars(_enteredPassword, password);
                     placeMatchText.text = "Совпадений букв по месту: " + CountPlaceMatchingChars(_enteredPassword, password);
 
-                    if (tryCount == 0)
+                    passwordText.text = "Введенный пароль: ";
+                    _enteredPassword = "";
+
+                    if (_tryCount == 0)
                     {
                         //SoundController.instance.PlaySoundRandomPitch(gameLoose);
                         DeathController.instance.TriggerDeath("Из-за неудачного взлома вы навсегда потеряли доступ к базе данных НИК, потеряв любую надежду покинуть комплекс. Вы умерли от истощения");
@@ -111,7 +85,7 @@ namespace DatabasePasswordMiniGame
                     print("thats right");
                     _eventHandler.SetDayCounterTrigger("BD");
 
-                    var spawnedObject = Instantiate(outputItem, spawnPlace.position, Quaternion.identity);
+                    GameObject spawnedObject = Instantiate(outputItem, itemSpawnPoint.position, Quaternion.identity);
 
                     switch (_dayCounter.CurrentDay)
                     {
@@ -165,13 +139,13 @@ namespace DatabasePasswordMiniGame
         public void TurnOn()
         {
             Cursor.lockState = CursorLockMode.None;
-            isActive = true;
+            _isActive = true;
         }
 
         public void TurnOff()
         {
             Cursor.lockState = CursorLockMode.Locked;
-            isActive = false;
+            _isActive = false;
         }
     }
 }

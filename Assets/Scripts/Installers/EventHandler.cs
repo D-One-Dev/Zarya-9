@@ -21,6 +21,7 @@ public class EventHandler : MonoBehaviour
     public event Action OnGoToNextDay;
     public event Action<string> OnSetDayCounterTrigger;
     public event Action OnResetDay;
+    public event Action<string> OnEnterLetter;
 
     public void StartSceneLoading(string sceneName)
     {
@@ -115,5 +116,10 @@ public class EventHandler : MonoBehaviour
     public void ResetDay()
     {
         OnResetDay?.Invoke();
+    }
+
+    public void EnterLetter(string letter)
+    {
+        OnEnterLetter?.Invoke(letter);
     }
 }
