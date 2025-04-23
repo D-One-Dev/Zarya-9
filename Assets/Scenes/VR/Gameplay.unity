@@ -88103,7 +88103,7 @@ MonoBehaviour:
   passwordText: {fileID: 1373857681}
   matchText: {fileID: 1820040923}
   placeMatchText: {fileID: 564553155}
-  itemSpawnPoint: {fileID: 0}
+  itemSpawnPoint: {fileID: 1625474828}
   outputItem: {fileID: 7178094938972766721, guid: 778362213204f894a854c6a60a8642b7, type: 3}
   password: "\u0448\u0430\u043F\u043A\u0430 \u0443\u0448\u0430\u043D\u043A\u0430"
 --- !u!114 &770383351
@@ -239322,7 +239322,7 @@ MonoBehaviour:
   passwordText: {fileID: 939224507}
   matchText: {fileID: 1444118609}
   placeMatchText: {fileID: 257197216}
-  itemSpawnPoint: {fileID: 0}
+  itemSpawnPoint: {fileID: 1625474828}
   outputItem: {fileID: 7178094938972766721, guid: 1231d98deb3143f4fa3af16eca395b00, type: 3}
   password: "\u043C\u0430\u0442\u0440\u0435\u0448\u043A\u0430"
 --- !u!114 &2000567526
@@ -256593,7 +256593,7 @@ MonoBehaviour:
   passwordText: {fileID: 1501566081}
   matchText: {fileID: 1389855927}
   placeMatchText: {fileID: 649038878}
-  itemSpawnPoint: {fileID: 0}
+  itemSpawnPoint: {fileID: 1625474828}
   outputItem: {fileID: 7178094938972766721, guid: 0dad397f492344f4da9b91a0f5492a0e, type: 3}
   password: "\u0441\u0430\u043C\u043E\u0432\u0430\u0440"
 --- !u!114 &2143059997

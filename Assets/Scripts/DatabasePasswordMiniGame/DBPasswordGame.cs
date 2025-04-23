@@ -82,6 +82,7 @@ namespace DatabasePasswordMiniGame
                 }
                 else
                 {
+                    _isActive = false;
                     print("thats right");
                     _eventHandler.SetDayCounterTrigger("BD");
 

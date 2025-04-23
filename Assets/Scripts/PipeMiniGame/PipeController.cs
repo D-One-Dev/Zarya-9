@@ -261,6 +261,7 @@ public class PipeController : MonoBehaviour, IInteractable
         if (tileGrid[endPipe.x, endPipe.y].filled)
         {
             gameWon = true;
+            _isActive = false;
             Debug.Log("Win");
             // SoundController.instance.PlaySoundRandomPitch(gameWin);
             _animator.SetTrigger("Win");

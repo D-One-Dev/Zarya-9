@@ -294,6 +294,7 @@ public class RoverGame : MonoBehaviour, IInteractable
         {
             // SoundController.instance.PlaySoundRandomPitch(gameWin);
             _isGameWon = true;
+            _isActive = false;
             _animator.SetTrigger("Win");
             _eventHandler.SetDayCounterTrigger("Rover");
             // DayCounter.Instance.SetTrigger("Rover");
