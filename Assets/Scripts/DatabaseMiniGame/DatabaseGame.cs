@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
 public class DatabaseGame : MonoBehaviour, IInteractable
 {
@@ -19,21 +20,32 @@ public class DatabaseGame : MonoBehaviour, IInteractable
 
     [SerializeField] private UnityEvent onCompleteGame;
 
-    private int progress;
-    private Controls _controls;
-    private bool active;
-    private void Awake()
+    private int _progress;
+    private bool _isActive;
+
+    private EventHandler _eventHandler;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
     {
-        _controls = new Controls();
-        _controls.Gameplay.Space.performed += ctx => Catch();
+        _eventHandler = eventHandler;
+        _eventHandler.OnMinigameKeyPressed += CheckKey;
     }
-    private void OnEnable()
+
+    private void CheckKey(string key)
     {
-        _controls.Enable();
-    }
-    private void OnDisable()
-    {
-        _controls.Disable();
+        if (_isActive)
+        {
+            switch (key)
+            {
+                case "catch":
+                    Catch();
+                    break;
+                default:
+                    Debug.LogWarning("Unknown key: " + key);
+                    break;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -44,21 +56,22 @@ public class DatabaseGame : MonoBehaviour, IInteractable
 
     private void Catch()
     {
-        if (PlayerInteraction.instance.playerStatus == 1 && active)
+        if (_isActive)
         {
             RectTransform zone = CheckCollision();
             if (CheckCollision() != null)
             {
                 zone.sizeDelta = new Vector2(zone.sizeDelta.x / 1.5f, zone.sizeDelta.y);
-                progress++;
-                progressBar.fillAmount = (float)progress / (greenZones.Length * 3);
-                if (progress == greenZones.Length * 3)
+                _progress++;
+                progressBar.fillAmount = (float)_progress / (greenZones.Length * 3);
+                if (_progress == greenZones.Length * 3)
                 {
                     Debug.Log("Win");
                     _animator.SetTrigger("Win");
                     // SoundController.instance.PlaySoundRandomPitch(gameWin);
 
                     onCompleteGame?.Invoke();
+                    _isActive = false;
                 }
                 // else SoundController.instance.PlaySoundRandomPitch(catchCorrect);
             }
@@ -91,13 +104,13 @@ public class DatabaseGame : MonoBehaviour, IInteractable
 
     public void TurnOn()
     {
-        active = true;
+        _isActive = true;
         gameUI.SetActive(true);
     }
 
     public void TurnOff()
     {
-        active = false;
+        _isActive = false;
         gameUI.SetActive(false);
     }
 }

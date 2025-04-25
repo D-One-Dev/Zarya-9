@@ -15,8 +15,8 @@ public class DeathController : MonoBehaviour
     public void TriggerDeath(string deathText)
     {
         //PlayerInteraction.instance.playerStatus = -1;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
         deathScreenText.text = deathText;
         _animator.SetTrigger("Death");
     }
