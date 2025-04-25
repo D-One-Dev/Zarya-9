@@ -1,8 +1,17 @@
 ﻿using UnityEngine;
+using Zenject;
 
 public class Rocket : MonoBehaviour
 {
-    [SerializeField] private SceneLoader sceneLoader;
+    //[SerializeField] private SceneLoader sceneLoader;
+
+    private EventHandler _eventHandler;
+
+    [Inject]
+    public void Construct(EventHandler eventHandler)
+    {
+        _eventHandler = eventHandler;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -11,6 +20,7 @@ public class Rocket : MonoBehaviour
             if (item.itemName == "Ключ доступа")
             {
                 //sceneLoader.StartSceneLoading("Game End");
+                _eventHandler.StartSceneLoading("Game End");
             }
         }
     }
